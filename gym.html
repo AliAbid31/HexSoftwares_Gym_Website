@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexFit Gym - Your Fitness Journey Starts Here</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #00aaff;
+            --secondary-color: #0077b6;
+            --background-color: #ffffff;
+            --surface-color: #f8f9fa;
+            --text-color: #212529;
+            --text-muted: #6c757d;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+        }
+
+        body.dark-mode {
+            --primary-color: #00aaff;
+            --secondary-color: #0077b6;
+            --background-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-color: #f8f9fa;
+            --text-muted: #adb5bd;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 6rem 0;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 0;
+            background: transparent;
+            z-index: 1000;
+            transition: background-color 0.4s, padding 0.4s, box-shadow 0.4s;
+        }
+
+        .header.scrolled {
+            background-color: var(--surface-color);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        #theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        #hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1975&auto=format&fit=crop') no-repeat center center/cover;
+            color: #fff;
+        }
+
+        #hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+        }
+
+        #hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card {
+            border: 2px solid transparent;
+        }
+
+        .pricing-card.popular {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+        
+        .pricing-card.popular:hover {
+             transform: scale(1.1) translateY(-10px);
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .price span {
+            font-size: 1rem;
+            font-weight: normal;
+            color: var(--text-muted);
+        }
+        
+        .pricing-card ul {
+            list-style: none;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+        
+        .pricing-card li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .pricing-card li i {
+            font-size: 1rem;
+            width: 25px;
+            color: var(--secondary-color);
+        }
+
+        footer {
+            background-color: var(--surface-color);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            h2 {
+                font-size: 2rem;
+            }
+            #hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="navbar container">
+            <a href="#hero" class="nav-logo">FlexFit</a>
+            <ul class="nav-menu">
+                <li><a href="#facilities" class="nav-link">Facilities</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#pricing" class="nav-link">Memberships</a></li>
+            </ul>
+            <button id="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <h1>Push Beyond Your Limits</h1>
+                <p>Join a community of enthusiasts and reach your goals with our state-of-the-art equipment and expert coaches.</p>
+                <a href="#pricing" class="btn">Become a Member</a>
+            </div>
+        </section>
+
+        <section id="facilities" class="container">
+            <h2>Our Facilities</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <i class="fas fa-dumbbell"></i>
+                    <h3>Weight Training Zone</h3>
+                    <p>A vast selection of free weights, guided machines, and dumbbells for all levels.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-person-running"></i>
+                    <h3>Cardio Area</h3>
+                    <p>Treadmills, elliptical trainers, rowers, and more, with integrated screens.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-person-swimming"></i>
+                    <h3>Pool & Sauna</h3>
+                    <p>A semi-Olympic pool for swimming and a relaxation area with sauna and steam room.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="container">
+            <h2>Our Services</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <i class="fas fa-user-shield"></i>
+                    <h3>Personal Training</h3>
+                    <p>Custom programs designed by our certified coaches to help you achieve your goals.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-users"></i>
+                    <h3>Group Classes</h3>
+                    <p>Yoga, Zumba, HIIT, Spinning... Over 30 classes per week to keep things exciting.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-apple-whole"></i>
+                    <h3>Nutritional Advice</h3>
+                    <p>Our nutritionists support you in optimizing your diet and results.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="container">
+            <h2>Choose Your Membership</h2>
+            <div class="grid-3">
+                <div class="pricing-card card">
+                    <h3>Essential</h3>
+                    <div class="price">$19.99<span> / month</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Unlimited gym access</li>
+                        <li><i class="fas fa-check"></i> Access to cardio area</li>
+                        <li><i class="fas fa-times"></i> Access to group classes</li>
+                        <li><i class="fas fa-times"></i> Access to pool & sauna</li>
+                    </ul>
+                    <a href="#" class="btn">Sign Up</a>
+                </div>
+                <div class="pricing-card card popular">
+                    <h3>Premium</h3>
+                    <div class="price">$39.99<span> / month</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Unlimited gym access</li>
+                        <li><i class="fas fa-check"></i> Access to cardio area</li>
+                        <li><i class="fas fa-check"></i> Access to group classes</li>
+                        <li><i class="fas fa-check"></i> Access to pool & sauna</li>
+                    </ul>
+                    <a href="#" class="btn">Sign Up</a>
+                </div>
+                <div class="pricing-card card">
+                    <h3>VIP</h3>
+                    <div class="price">$59.99<span> / month</span></div>
+                     <ul>
+                        <li><i class="fas fa-check"></i> All Premium benefits</li>
+                        <li><i class="fas fa-check"></i> Personal training included</li>
+                        <li><i class="fas fa-check"></i> Nutritional tracking</li>
+                        <li><i class="fas fa-check"></i> Unlimited guest access</li>
+                    </ul>
+                    <a href="#" class="btn">Sign Up</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 FlexFit Gym. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('.header');
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            const moonIcon = '<i class="fas fa-moon"></i>';
+            const sunIcon = '<i class="fas fa-sun"></i>';
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            const enableDarkMode = () => {
+                body.classList.add('dark-mode');
+                themeToggle.innerHTML = sunIcon;
+                localStorage.setItem('theme', 'dark');
+            };
+
+            const disableDarkMode = () => {
+                body.classList.remove('dark-mode');
+                themeToggle.innerHTML = moonIcon;
+                localStorage.setItem('theme', 'light');
+            };
+
+            if (localStorage.getItem('theme') === 'dark') {
+                enableDarkMode();
+            }
+
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark-mode')) {
+                    disableDarkMode();
+                } else {
+                    enableDarkMode();
+                }
+            });
+            
+            const cards = document.querySelectorAll('.card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+            
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        document.querySelector('.nav-link.active')?.classList.remove('active');
+                        document.querySelector(`a[href="#${id}"]`).classList.add('active');
+                    }
+                });
+            }, {
+                rootMargin: "-50% 0px -50% 0px"
+            });
+
+            document.querySelectorAll('main section[id]').forEach(section => {
+                sectionObserver.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
